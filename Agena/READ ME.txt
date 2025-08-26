@@ -1,0 +1,43 @@
+Pasos para crear la base de datos:
+
+CREATE DATABASE agenda;
+
+CREATE USER 'usuario1'@'localhost' IDENTIFIED by 'superpassword';
+GRANT ALL PRIVILEGES ON agenda.* TO 'usuario1'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+mariadb -u usuario1 -p
+
+use agenda;
+
+CREATE TABLE Personas (
+id INT AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Telefonos (
+id INT AUTO_INCREMENT PRIMARY KEY,
+personaId INT NOT NULL,
+telefono VARCHAR(20) NOT NULL,
+FOREIGN KEY (personaId) REFERENCES Personas(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+CREATE TABLE Direcciones (
+id INT AUTO_INCREMENT PRIMARY KEY,
+calle VARCHAR(100) NOT NULL,
+ciudad VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Persona_Direccion (
+    personaId INT NOT NULL,
+    direccionId INT NOT NULL,
+    tipo ENUM('Casa', 'Trabajo', 'Otra') DEFAULT 'Casa',
+    PRIMARY KEY (personaId, direccionId),
+    FOREIGN KEY (personaId) REFERENCES Personas(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (direccionId) REFERENCES Direcciones(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
